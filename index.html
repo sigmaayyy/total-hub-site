@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050907">
 <meta name="description" content="Total Hub — Free Roblox script library. Hubs, autofarms, and more.">
-<title>Total Hub Wesbite</title>
+<title>Total Hub — Script Library</title>
 
 <!-- Adsterra Popunder -->
-<script data-cfasync="false" src="https://abscloud.org/1/2d6b2ceb2c6f5278f2a8ae569afe420a" onerror="window.__totalHubPopunderBlocked = true"></script>
+<script data-cfasync="false" src="https://abscloud.org/1/2d6b2ceb2c6f5278f2a8ae569afe420a" onerror="window.__adsPopFail=1"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -561,81 +561,17 @@ button, input { font: inherit; }
   }
 }
 
-#adblockScreen {
-  position: fixed;
-  inset: 0;
-  z-index: 999999;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background:
-    radial-gradient(ellipse 75% 55% at 50% 0%, rgba(0, 245, 160, .12), transparent 65%),
-    rgba(2, 6, 5, .97);
-  backdrop-filter: blur(18px);
-}
-#adblockScreen.active { display: flex; }
-.adblock-card {
-  width: min(460px, 100%);
-  padding: 34px 28px;
-  text-align: center;
-  border: 1px solid rgba(0, 245, 160, .24);
-  border-radius: 20px;
-  background: linear-gradient(145deg, #0b1712, #060c09);
-  box-shadow: 0 24px 90px rgba(0, 0, 0, .55), 0 0 45px rgba(0, 245, 160, .07);
-}
-.adblock-icon {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 20px;
-  border: 1px solid rgba(0, 245, 160, .28);
-  border-radius: 17px;
-  background: rgba(0, 245, 160, .08);
-  color: var(--green);
-  font-size: 27px;
-}
-.adblock-card h2 {
-  margin-bottom: 10px;
-  color: var(--text);
-  font-size: 23px;
-  font-weight: 850;
-  letter-spacing: -.6px;
-}
-.adblock-card p {
-  margin: 0 auto 22px;
-  max-width: 350px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-.adblock-refresh {
-  width: 100%;
-  padding: 12px 18px;
-  border: 1px solid var(--green);
-  border-radius: 10px;
-  background: var(--green);
-  color: #03110b;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform .15s, filter .15s;
-}
-.adblock-refresh:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.adblock-note {
-  display: block;
-  margin-top: 14px;
-  color: #587565;
-  font-size: 11px;
-}
-.ad-detection-bait {
-  position: absolute !important;
-  left: -10000px !important;
-  top: -10000px !important;
-  width: 10px !important;
-  height: 10px !important;
-  pointer-events: none !important;
-}
+
+
+#adblockScreen{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse 75% 55% at 50% 0%,rgba(0,245,160,.12),transparent 65%),rgba(2,6,5,.97);backdrop-filter:blur(18px)}
+#adblockScreen.active{display:flex}
+.adblock-card{width:min(460px,100%);padding:34px 28px;text-align:center;border:1px solid rgba(0,245,160,.24);border-radius:20px;background:linear-gradient(145deg,#0b1712,#060c09);box-shadow:0 24px 90px rgba(0,0,0,.55),0 0 45px rgba(0,245,160,.07)}
+.adblock-icon{width:58px;height:58px;display:grid;place-items:center;margin:0 auto 20px;border:1px solid rgba(0,245,160,.28);border-radius:17px;background:rgba(0,245,160,.08);color:var(--green);font-size:27px}
+.adblock-card h2{margin-bottom:10px;color:var(--text);font-size:23px;font-weight:850;letter-spacing:-.6px}
+.adblock-card p{margin:0 auto 22px;max-width:350px;color:var(--muted);font-size:13px;line-height:1.7}
+.adblock-refresh{width:100%;padding:12px 18px;border:1px solid var(--green);border-radius:10px;background:var(--green);color:#03110b;font-weight:800;cursor:pointer}
+.adblock-refresh:hover{filter:brightness(1.08)}
+.adblock-note{display:block;margin-top:14px;color:#587565;font-size:11px}
 
 </style>
 </head>
@@ -648,9 +584,10 @@ button, input { font: inherit; }
     <h2 id="adblockTitle">Ad blocker detected</h2>
     <p>Total Hub is supported by ads. Please disable your ad blocker for this site, then refresh the page to continue.</p>
     <button class="adblock-refresh" type="button" onclick="window.location.reload()">I've disabled it — refresh</button>
-    <span class="adblock-note">If you believe this is a mistake, check your browser's tracking protection settings.</span>
+    <span class="adblock-note">If you believe this is a mistake, check browser tracking protection / Brave Shields / uBlock.</span>
   </div>
 </div>
+
 
 
 <header class="topbar">
@@ -730,7 +667,7 @@ button, input { font: inherit; }
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- Adsterra Social Bar -->
-<script data-cfasync="false" src="https://bauval.org/14/1b5803aedd56a6b10849acc666a44ff6" onerror="window.__totalHubSocialBarBlocked = true"></script>
+<script data-cfasync="false" src="https://bauval.org/14/1b5803aedd56a6b10849acc666a44ff6" onerror="window.__adsBarFail=1"></script>
 
 <script>
 'use strict';
@@ -1017,47 +954,75 @@ if (canHover) {
 }
 
 
-(function initAdblockGuard() {
-  function showAdblockScreen() {
-    const screen = document.getElementById('adblockScreen');
+
+(function () {
+  function lockPage() {
+    var screen = document.getElementById('adblockScreen');
     if (!screen || screen.classList.contains('active')) return;
     screen.classList.add('active');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
   }
 
-  // In-flow bait (not position:absolute). Adblockers that strip ads collapse this.
-  const bait = document.createElement('div');
-  bait.className = 'adsbox ad-banner adsbygoogle pub_300x250 textads';
-  bait.setAttribute('aria-hidden', 'true');
-  bait.style.cssText = 'width:1px!important;height:1px!important;margin:0!important;padding:0!important;overflow:hidden!important;opacity:0.01!important;pointer-events:none!important;';
-  bait.innerHTML = '&nbsp;';
-  document.body.appendChild(bait);
-
-  function baitBlocked() {
-    try {
-      const style = window.getComputedStyle(bait);
-      return bait.offsetHeight === 0 ||
-        bait.clientHeight === 0 ||
-        style.display === 'none' ||
-        style.visibility === 'hidden';
-    } catch (e) {
-      return false;
-    }
+  function makeBait() {
+    var b = document.createElement('div');
+    b.className = 'adsbox ad-banner adsbygoogle pub_300x250 pub_728x90 text-ad textAd text_ad text_ads text-ads';
+    b.setAttribute('aria-hidden', 'true');
+    // Keep it in normal flow so offsetHeight is meaningful
+    b.style.setProperty('width', '1px', 'important');
+    b.style.setProperty('height', '1px', 'important');
+    b.style.setProperty('position', 'absolute', 'important');
+    b.style.setProperty('left', '-9999px', 'important');
+    b.style.setProperty('top', '-9999px', 'important');
+    b.style.setProperty('pointer-events', 'none', 'important');
+    b.innerHTML = '&nbsp;';
+    document.body.appendChild(b);
+    return b;
   }
 
-  function checkAdblock() {
-    // Only lock the page when the bait is clearly stripped by an adblocker.
-    // Script onerror alone is NOT enough (Adsterra can fail for network/region reasons).
-    if (baitBlocked()) {
-      showAdblockScreen();
-    }
-    try { bait.remove(); } catch (e) {}
+  function baitLooksBlocked(b) {
+    var cs = window.getComputedStyle(b);
+    // Real adblockers force display:none / height:0 on .adsbox etc.
+    if (cs.display === 'none' || cs.visibility === 'hidden') return true;
+    if (b.offsetHeight === 0 && b.clientHeight === 0) return true;
+    return false;
   }
 
-  window.addEventListener('load', function () {
-    window.setTimeout(checkAdblock, 1200);
-  }, { once: true });
+  // Secondary check: can we load a tiny image from a known ads domain?
+  function probeAdDomain() {
+    return new Promise(function (resolve) {
+      var done = false;
+      function finish(v) { if (!done) { done = true; resolve(v); } }
+      var img = new Image();
+      img.onload = function () { finish(false); };
+      img.onerror = function () { finish(true); };
+      // cache-bust; if adblock blocks the host this errors
+      img.src = 'https://abscloud.org/favicon.ico?t=' + Date.now();
+      setTimeout(function () { finish(true); }, 2500);
+    });
+  }
+
+  function runCheck() {
+    var bait = makeBait();
+    setTimeout(function () {
+      var baitBlocked = baitLooksBlocked(bait);
+      try { bait.remove(); } catch (e) {}
+
+      var scriptsFailed = window.__adsPopFail === 1 && window.__adsBarFail === 1;
+
+      probeAdDomain().then(function (domainBlocked) {
+        // Lock only if at least two independent signals say "blocked"
+        var score = 0;
+        if (baitBlocked) score++;
+        if (scriptsFailed) score++;
+        if (domainBlocked) score++;
+        if (score >= 2) lockPage();
+      });
+    }, 400);
+  }
+
+  if (document.readyState === 'complete') setTimeout(runCheck, 800);
+  else window.addEventListener('load', function () { setTimeout(runCheck, 800); }, { once: true });
 })();
 
 render();
