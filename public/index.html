@@ -7,10 +7,10 @@
 <meta name="description" content="Total Hub — Free Roblox script library. Hubs, autofarms, and more.">
 <title>Total Hub — Script Library</title>
 
-
+<!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634526434889185" crossorigin="anonymous"></script>
 
-
+<!-- Adsterra Popunder -->
 <script data-cfasync="false" src="https://abscloud.org/1/443e393cfde77012a7ad89fcca7b6626"></script>
 
 <style>
@@ -563,10 +563,100 @@ button, input { font: inherit; }
     transition: none !important;
   }
 }
+
+/* Anti-adblock screen */
+#adblockScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 0%, rgba(0, 245, 160, .12), transparent 65%),
+    rgba(2, 6, 5, .97);
+  backdrop-filter: blur(18px);
+}
+#adblockScreen.active { display: flex; }
+.adblock-card {
+  width: min(460px, 100%);
+  padding: 34px 28px;
+  text-align: center;
+  border: 1px solid rgba(0, 245, 160, .24);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #0b1712, #060c09);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, .55), 0 0 45px rgba(0, 245, 160, .07);
+}
+.adblock-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  border: 1px solid rgba(0, 245, 160, .28);
+  border-radius: 17px;
+  background: rgba(0, 245, 160, .08);
+  color: var(--green);
+  font-size: 27px;
+}
+.adblock-card h2 {
+  margin-bottom: 10px;
+  color: var(--text);
+  font-size: 23px;
+  font-weight: 850;
+  letter-spacing: -.6px;
+}
+.adblock-card p {
+  margin: 0 auto 22px;
+  max-width: 350px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.adblock-refresh {
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid var(--green);
+  border-radius: 10px;
+  background: var(--green);
+  color: #03110b;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .15s, filter .15s;
+}
+.adblock-refresh:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.adblock-note {
+  display: block;
+  margin-top: 14px;
+  color: #587565;
+  font-size: 11px;
+}
+/* Hidden test elements used by the detector */
+.ad-detection-bait {
+  position: absolute !important;
+  left: -10000px !important;
+  top: -10000px !important;
+  width: 10px !important;
+  height: 10px !important;
+  pointer-events: none !important;
+}
+
 </style>
 </head>
 <body>
 <div class="mouse-glow" id="mouseGlow" aria-hidden="true"></div>
+
+<div id="adblockScreen" role="dialog" aria-modal="true" aria-labelledby="adblockTitle">
+  <div class="adblock-card">
+    <div class="adblock-icon" aria-hidden="true">⚠</div>
+    <h2 id="adblockTitle">Ad blocker detected</h2>
+    <p>Total Hub is supported by ads. Please disable your ad blocker for this site, then refresh the page to continue.</p>
+    <button class="adblock-refresh" type="button" onclick="window.location.reload()">I've disabled it — refresh</button>
+    <span class="adblock-note">If you believe this is a mistake, check your browser's tracking protection settings.</span>
+  </div>
+</div>
+
 
 <header class="topbar">
   <div class="logo">Total <span>Hub</span></div>
@@ -886,6 +976,34 @@ if (canHover) {
     frame++;
   }, { passive: true });
 }
+
+
+// Anti-adblock detection: a hidden ad-shaped element is checked after page load.
+// Some privacy tools can cause false positives, so this only detects common blocking rules.
+(function initAdblockGuard() {
+  const bait = document.createElement('div');
+  bait.className = 'adsbox ad-placement ad-detection-bait';
+  bait.setAttribute('aria-hidden', 'true');
+  bait.innerHTML = '&nbsp;';
+  document.body.appendChild(bait);
+
+  function checkAdblock() {
+    const style = window.getComputedStyle(bait);
+    const blocked = bait.offsetHeight === 0 ||
+      bait.offsetWidth === 0 ||
+      style.display === 'none' ||
+      style.visibility === 'hidden';
+    bait.remove();
+
+    if (blocked) {
+      document.getElementById('adblockScreen')?.classList.add('active');
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  window.addEventListener('load', () => window.setTimeout(checkAdblock, 350), { once: true });
+})();
 
 render();
 </script>
