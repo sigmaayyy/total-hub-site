@@ -685,6 +685,13 @@ const scripts = [
 
 let currentFilter = 'All';
 const favorites = new Set();
+try {
+  const savedFavs = JSON.parse(localStorage.getItem('totalhub-favorites') || '[]');
+  if (Array.isArray(savedFavs)) savedFavs.forEach(n => favorites.add(n));
+} catch (e) {}
+function saveFavorites() {
+  try { localStorage.setItem('totalhub-favorites', JSON.stringify([...favorites])); } catch (e) {}
+}
 const grid = document.getElementById('grid');
 const search = document.getElementById('search');
 const toast = document.getElementById('toast');
@@ -718,17 +725,19 @@ function runWithActionGate(control, action) {
     return;
   }
 
-  const gateLink = document.createElement('a');
-  gateLink.href = ACTION_GATE_URL;
-  gateLink.target = '_blank';
-  gateLink.rel = 'noopener noreferrer';
-  gateLink.style.display = 'none';
-  document.body.appendChild(gateLink);
-  gateLink.click();
-  gateLink.remove();
+  try {
+    const gateLink = document.createElement('a');
+    gateLink.href = ACTION_GATE_URL;
+    gateLink.target = '_blank';
+    gateLink.rel = 'noopener noreferrer';
+    gateLink.style.display = 'none';
+    document.body.appendChild(gateLink);
+    gateLink.click();
+    gateLink.remove();
+  } catch (e) {}
 
   control.dataset.actionGateReady = 'true';
-  notify('Page opened in a new tab. Press the button again to continue.');
+  notify('Complete the page, then press the button again.');
 }
 
 async function copyText(text) {
@@ -775,6 +784,7 @@ function render() {
       </div>`;
     card.querySelector('.star').addEventListener('click', () => {
       favorites.has(s.name) ? favorites.delete(s.name) : favorites.add(s.name);
+      saveFavorites();
       render();
     });
     card.querySelector('.copy').addEventListener('click', e => runWithActionGate(e.currentTarget, () => copyText(s.code)));
@@ -836,11 +846,15 @@ const settingsPrefs = {
 };
 Object.entries(settingsPrefs).forEach(([id, cls]) => {
   const el = document.getElementById(id);
-  try { el.checked = localStorage.getItem('totalhub-' + id) === 'true'; } catch {}
+  if (!el) return;
+  try {
+    const saved = localStorage.getItem('totalhub-' + id);
+    if (saved !== null) el.checked = saved === 'true';
+  } catch (e) {}
   document.body.classList.toggle(cls, id === 'animationsToggle' ? !el.checked : el.checked);
   el.addEventListener('change', () => {
     document.body.classList.toggle(cls, id === 'animationsToggle' ? !el.checked : el.checked);
-    try { localStorage.setItem('totalhub-' + id, String(el.checked)); } catch {}
+    try { localStorage.setItem('totalhub-' + id, String(el.checked)); } catch (e) {}
   });
 });
 
@@ -968,38 +982,21 @@ if (canHover) {
     var b = document.createElement('div');
     b.className = 'adsbox ad-banner adsbygoogle pub_300x250 pub_728x90 text-ad textAd text_ad text_ads text-ads';
     b.setAttribute('aria-hidden', 'true');
-    // Keep it in normal flow so offsetHeight is meaningful
-    b.style.setProperty('width', '1px', 'important');
-    b.style.setProperty('height', '1px', 'important');
-    b.style.setProperty('position', 'absolute', 'important');
-    b.style.setProperty('left', '-9999px', 'important');
-    b.style.setProperty('top', '-9999px', 'important');
-    b.style.setProperty('pointer-events', 'none', 'important');
+    b.style.cssText = 'width:1px!important;height:1px!important;position:absolute!important;left:-10000px!important;top:-1000px!important;pointer-events:none!important;';
     b.innerHTML = '&nbsp;';
     document.body.appendChild(b);
     return b;
   }
 
   function baitLooksBlocked(b) {
-    var cs = window.getComputedStyle(b);
-    // Real adblockers force display:none / height:0 on .adsbox etc.
-    if (cs.display === 'none' || cs.visibility === 'hidden') return true;
-    if (b.offsetHeight === 0 && b.clientHeight === 0) return true;
-    return false;
-  }
-
-  // Secondary check: can we load a tiny image from a known ads domain?
-  function probeAdDomain() {
-    return new Promise(function (resolve) {
-      var done = false;
-      function finish(v) { if (!done) { done = true; resolve(v); } }
-      var img = new Image();
-      img.onload = function () { finish(false); };
-      img.onerror = function () { finish(true); };
-      // cache-bust; if adblock blocks the host this errors
-      img.src = 'https://abscloud.org/favicon.ico?t=' + Date.now();
-      setTimeout(function () { finish(true); }, 2500);
-    });
+    try {
+      var cs = window.getComputedStyle(b);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return true;
+      if (b.offsetHeight === 0) return true;
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 
   function runCheck() {
@@ -1007,22 +1004,14 @@ if (canHover) {
     setTimeout(function () {
       var baitBlocked = baitLooksBlocked(bait);
       try { bait.remove(); } catch (e) {}
-
       var scriptsFailed = window.__adsPopFail === 1 && window.__adsBarFail === 1;
-
-      probeAdDomain().then(function (domainBlocked) {
-        // Lock only if at least two independent signals say "blocked"
-        var score = 0;
-        if (baitBlocked) score++;
-        if (scriptsFailed) score++;
-        if (domainBlocked) score++;
-        if (score >= 2) lockPage();
-      });
-    }, 400);
+      // Need clear bait block, or both ad scripts failed to load
+      if (baitBlocked || scriptsFailed) lockPage();
+    }, 1000);
   }
 
-  if (document.readyState === 'complete') setTimeout(runCheck, 800);
-  else window.addEventListener('load', function () { setTimeout(runCheck, 800); }, { once: true });
+  if (document.readyState === 'complete') setTimeout(runCheck, 1000);
+  else window.addEventListener('load', function () { setTimeout(runCheck, 1000); }, { once: true });
 })();
 
 render();
