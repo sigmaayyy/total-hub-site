@@ -788,11 +788,16 @@ function runWithActionGate(control, action) {
     return;
   }
 
-  const opened = window.open(ACTION_GATE_URL, '_blank', 'noopener');
-  if (!opened) {
-    notify('Please allow pop-ups for Total Hub, then try again.');
-    return;
-  }
+  // Use a temporary link rather than window.open(): window.open() can return
+  // null when "noopener" is used even when the tab was successfully opened.
+  const gateLink = document.createElement('a');
+  gateLink.href = ACTION_GATE_URL;
+  gateLink.target = '_blank';
+  gateLink.rel = 'noopener noreferrer';
+  gateLink.style.display = 'none';
+  document.body.appendChild(gateLink);
+  gateLink.click();
+  gateLink.remove();
 
   control.dataset.actionGateReady = 'true';
   notify('Page opened in a new tab. Press the button again to continue.');
@@ -947,11 +952,15 @@ function gateExecutorLink(event, link, destination) {
     window.open(destination, '_blank', 'noopener');
     return false;
   }
-  const opened = window.open(ACTION_GATE_URL, '_blank', 'noopener');
-  if (!opened) {
-    notify('Please allow pop-ups for Total Hub, then try again.');
-    return false;
-  }
+  const gateLink = document.createElement('a');
+  gateLink.href = ACTION_GATE_URL;
+  gateLink.target = '_blank';
+  gateLink.rel = 'noopener noreferrer';
+  gateLink.style.display = 'none';
+  document.body.appendChild(gateLink);
+  gateLink.click();
+  gateLink.remove();
+
   link.dataset.actionGateReady = 'true';
   notify('Page opened in a new tab. Press the executor link again to continue.');
   return false;
@@ -1047,11 +1056,11 @@ if (canHover) {
       window.__totalHubPopunderBlocked === true &&
       window.__totalHubSocialBarBlocked === true;
 
-    if (baitBlocked || bothAdScriptsBlocked) showAdblockScreen();
+    if (baitBlocked) showAdblockScreen();
   }
 
   // Wait for scripts and common blocking rules to settle before checking.
-  window.addEventListener('load', () => window.setTimeout(checkAdblock, 1200), { once: true });
+  window.addEventListener('load', () => window.setTimeout(checkAdblock, 500), { once: true });
 })();
 
 render();
