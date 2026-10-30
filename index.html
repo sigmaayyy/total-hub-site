@@ -7,11 +7,8 @@
 <meta name="description" content="Total Hub — Free Roblox script library. Hubs, autofarms, and more.">
 <title>Total Hub — Script Library</title>
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634526434889185" crossorigin="anonymous"></script>
-
 <!-- Adsterra Popunder -->
-<script data-cfasync="false" src="https://abscloud.org/1/443e393cfde77012a7ad89fcca7b6626" onerror="window.__totalHubPopunderBlocked = true"></script>
+<script data-cfasync="false" src="https://abscloud.org/1/2d6b2ceb2c6f5278f2a8ae569afe420a" onerror="window.__totalHubPopunderBlocked = true"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -564,7 +561,6 @@ button, input { font: inherit; }
   }
 }
 
-/* Anti-adblock screen */
 #adblockScreen {
   position: fixed;
   inset: 0;
@@ -632,7 +628,6 @@ button, input { font: inherit; }
   color: #587565;
   font-size: 11px;
 }
-/* Hidden test elements used by the detector */
 .ad-detection-bait {
   position: absolute !important;
   left: -10000px !important;
@@ -735,7 +730,7 @@ button, input { font: inherit; }
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- Adsterra Social Bar -->
-<script data-cfasync="false" src="https://bauval.org/14/6969f19eb4bb6fce8af984ba715074bf" onerror="window.__totalHubSocialBarBlocked = true"></script>
+<script data-cfasync="false" src="https://bauval.org/14/1b5803aedd56a6b10849acc666a44ff6" onerror="window.__totalHubSocialBarBlocked = true"></script>
 
 <script>
 'use strict';
@@ -777,10 +772,8 @@ function getShownScripts() {
   );
 }
 
-const ACTION_GATE_URL = 'https://asiafilm.org/4/454b282ef31d5b0e11770513e555455a';
+const ACTION_GATE_URL = 'https://araplhn.org/4/8cd6318dbfa3f6a8b368f31f9176b438';
 
-// First activation opens the external page. Activating the same control again
-// performs its original action.
 function runWithActionGate(control, action) {
   if (control.dataset.actionGateReady === 'true') {
     control.dataset.actionGateReady = 'false';
@@ -788,8 +781,6 @@ function runWithActionGate(control, action) {
     return;
   }
 
-  // Use a temporary link rather than window.open(): window.open() can return
-  // null when "noopener" is used even when the tab was successfully opened.
   const gateLink = document.createElement('a');
   gateLink.href = ACTION_GATE_URL;
   gateLink.target = '_blank';
@@ -1026,41 +1017,67 @@ if (canHover) {
 }
 
 
-// Anti-adblock detection.
-// Checks a standard ad-block bait element and whether BOTH Adsterra script
-// requests were blocked. A single failed ad request is not enough to lock the page.
 (function initAdblockGuard() {
-  const bait = document.createElement('div');
-  bait.className = 'adsbox ad-placement ad-detection-bait';
-  bait.setAttribute('aria-hidden', 'true');
-  bait.innerHTML = '&nbsp;';
-  document.body.appendChild(bait);
-
   function showAdblockScreen() {
     const screen = document.getElementById('adblockScreen');
-    if (!screen) return;
+    if (!screen || screen.classList.contains('active')) return;
     screen.classList.add('active');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
   }
 
-  function checkAdblock() {
-    const style = window.getComputedStyle(bait);
-    const baitBlocked = bait.offsetHeight === 0 ||
-      bait.offsetWidth === 0 ||
-      style.display === 'none' ||
-      style.visibility === 'hidden';
-    bait.remove();
-
-    const bothAdScriptsBlocked =
-      window.__totalHubPopunderBlocked === true &&
-      window.__totalHubSocialBarBlocked === true;
-
-    if (baitBlocked) showAdblockScreen();
+  function createBait(className) {
+    const el = document.createElement('div');
+    el.className = className;
+    el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
+    el.innerHTML = '&nbsp;';
+    document.body.appendChild(el);
+    return el;
   }
 
-  // Wait for scripts and common blocking rules to settle before checking.
-  window.addEventListener('load', () => window.setTimeout(checkAdblock, 500), { once: true });
+  const baits = [
+    createBait('adsbox'),
+    createBait('ad-placement adsbygoogle'),
+    createBait('ad-banner pub_300x250'),
+    createBait('textads banner-ads ad-unit')
+  ];
+
+  function baitIsBlocked(el) {
+    try {
+      const style = window.getComputedStyle(el);
+      return el.offsetParent === null ||
+        el.offsetHeight === 0 ||
+        el.offsetWidth === 0 ||
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        style.opacity === '0' ||
+        style.clipPath === 'inset(100%)' ||
+        style.height === '0px' ||
+        style.width === '0px';
+    } catch (e) {
+      return true;
+    }
+  }
+
+  function checkAdblock() {
+    let blockedBaits = 0;
+    baits.forEach(function (el) {
+      if (baitIsBlocked(el)) blockedBaits++;
+      try { el.remove(); } catch (e) {}
+    });
+
+    const popunderBlocked = window.__totalHubPopunderBlocked === true;
+    const socialBlocked = window.__totalHubSocialBarBlocked === true;
+    const adsBlocked = blockedBaits >= 2 || (popunderBlocked && socialBlocked) || blockedBaits >= 1 && (popunderBlocked || socialBlocked);
+
+    if (adsBlocked) showAdblockScreen();
+  }
+
+  window.addEventListener('load', function () {
+    window.setTimeout(checkAdblock, 900);
+    window.setTimeout(checkAdblock, 2200);
+  }, { once: true });
 })();
 
 render();
